@@ -10,6 +10,7 @@ using Spacewood.Unity.MonoBehaviours.Board;
 using Spacewood.Unity.MonoBehaviours.Build;
 using Spacewood.Unity.Views;
 using SuperAutoPetsMod.API;
+using SuperAutoPetsMod.MonoBehaviours;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,24 +24,24 @@ namespace SuperAutoPetsMod.Patching
     public class TestPatch : IManualPatch
     {
         private static ManualLogSource logSource;
-        private static ConcurrentDictionary<string, Color> lookup;
-        private static ConcurrentDictionary<string, GameObject> lookup2;
+        //private static ConcurrentDictionary<string, Color> lookup;
+        //private static ConcurrentDictionary<string, GameObject> lookup2;
 
         public TestPatch(ManualLogSource newLogger)
         {
             logSource = newLogger ?? throw new ArgumentNullException(nameof(newLogger));
-            lookup = new ConcurrentDictionary<string, Color>();
-            lookup2 = new ConcurrentDictionary<string, GameObject>();
+            //lookup = new ConcurrentDictionary<string, Color>();
+            //lookup2 = new ConcurrentDictionary<string, GameObject>();
         }
 
         public void SetUpManualPatch(Harmony harmony)
         {
             var method1 = typeof(Spacewood.Unity.Views.BoardView).GetMethod("SetMinion");
-            logSource.LogInfo($"PATCH2 - Souce method: {method1}");
+            logSource.LogInfo($"PATCH - Souce method: {method1}");
             var postfixMethod1 = AccessTools.Method("SuperAutoPetsMod.Patching.TestPatch:PostfixPatchMethodBoardSetMinion");
-            logSource.LogInfo($"PATCH2 - Target method: {postfixMethod1}");
+            logSource.LogInfo($"PATCH - Target method: {postfixMethod1}");
             harmony.Patch(method1, postfix: new HarmonyMethod(postfixMethod1));
-            logSource.LogInfo($"PATCH2 - DONE");
+            logSource.LogInfo($"PATCH - DONE");
         }
 
         public static void PostfixPatchMethodBoardSetMinion(object __instance, ref MinionView __result, MinionModel minionModel)

@@ -1,7 +1,13 @@
 ﻿using BepInEx;
 using BepInEx.IL2CPP;
 using HarmonyLib;
+using Settings;
+using SuperAutoPetsMod;
+using SuperAutoPetsMod.MonoBehaviours;
 using SuperAutoPetsMod.Patching;
+using SuperAutoPetsMod.Twitch;
+using System.Reflection;
+using UnityEngine;
 
 namespace MyFirstPlugin
 {
@@ -14,12 +20,24 @@ namespace MyFirstPlugin
             // Plugin startup logic
             Log.LogInfo($"Plugin org.phantombadger.plugins.superautopetsmod is loaded!");
 
+            // Set up components
             AddComponent<TestMonoBehaviour>();
+            AddComponent<EmoteConsumerMonoBehaviour>();
 
+            // Initialise Logger and Settings
+            var logger = new BepInExLogger(Log);
+            var userSettings = new UserSettings(SuperAutoPetsModSettingsContext.SettingsFileName, SuperAutoPetsModSettingsContext.GetDefaultSettings(), logger);
+
+            // Initialise Harmony
             var harmony = new Harmony("com.phantombadger.superautopets");
             harmony.PatchAll();
 
-            var patch = new TestPatch(Log);
+            // Make the Twitch Factory
+            var twitchClientFactory = new TwitchClientFactory(userSettings, logger);
+            var twitchEmoteProvider = new TwitchEmoteProvider(twitchClientFactory.GetTwitchClient());
+
+            // Set up the manual patches
+            var patch = new BoardViewPatch(twitchEmoteProvider, logger);
             patch.SetUpManualPatch(harmony);
 
             Log.LogInfo($"Plugin org.phantombadger.plugins.superautopetsmod Load Function is complete!");

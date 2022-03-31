@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SuperAutoPetsMod.Patching
+namespace SuperAutoPetsMod.MonoBehaviours
 {
     public class TestMonoBehaviour : MonoBehaviour
     {

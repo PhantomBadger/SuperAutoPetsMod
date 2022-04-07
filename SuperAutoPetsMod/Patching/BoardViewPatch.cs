@@ -31,7 +31,7 @@ namespace SuperAutoPetsMod.Patching
 
         public static void PostfixPatchBoardViewSetMinion(object __instance, ref MinionView __result, MinionModel minionModel)
         {
-
+            // TODO: Make consumer component and give it the provider
         }
     }
 }

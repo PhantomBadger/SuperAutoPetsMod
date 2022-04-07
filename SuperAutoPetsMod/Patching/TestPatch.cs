@@ -1,5 +1,4 @@
 ﻿using BepInEx.Logging;
-using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using Newtonsoft.Json;
 using Spacewood.Core.Enums;
@@ -23,13 +22,15 @@ namespace SuperAutoPetsMod.Patching
 {
     public class TestPatch : IManualPatch
     {
-        private static ManualLogSource logSource;
+        private static BepInExLogger logger;
+        private static Twitch.TwitchEmoteProvider emoteProvider;
         //private static ConcurrentDictionary<string, Color> lookup;
         //private static ConcurrentDictionary<string, GameObject> lookup2;
 
-        public TestPatch(ManualLogSource newLogger)
+        public TestPatch(BepInExLogger newLogger, Twitch.TwitchEmoteProvider emoteProvider)
         {
-            logSource = newLogger ?? throw new ArgumentNullException(nameof(newLogger));
+            logger = newLogger ?? throw new ArgumentNullException(nameof(newLogger));
+            TestPatch.emoteProvider = emoteProvider;
             //lookup = new ConcurrentDictionary<string, Color>();
             //lookup2 = new ConcurrentDictionary<string, GameObject>();
         }
@@ -37,11 +38,11 @@ namespace SuperAutoPetsMod.Patching
         public void SetUpManualPatch(Harmony harmony)
         {
             var method1 = typeof(Spacewood.Unity.Views.BoardView).GetMethod("SetMinion");
-            logSource.LogInfo($"PATCH - Souce method: {method1}");
+            logger.Information($"PATCH - Souce method: {method1}");
             var postfixMethod1 = AccessTools.Method("SuperAutoPetsMod.Patching.TestPatch:PostfixPatchMethodBoardSetMinion");
-            logSource.LogInfo($"PATCH - Target method: {postfixMethod1}");
+            logger.Information($"PATCH - Target method: {postfixMethod1}");
             harmony.Patch(method1, postfix: new HarmonyMethod(postfixMethod1));
-            logSource.LogInfo($"PATCH - DONE");
+            logger.Information($"PATCH - DONE");
         }
 
         public static void PostfixPatchMethodBoardSetMinion(object __instance, ref MinionView __result, MinionModel minionModel)
@@ -49,15 +50,12 @@ namespace SuperAutoPetsMod.Patching
             // Called when a Minion is added to the board!
             try
             {
-                logSource.LogInfo($"Entered Board.SetMinion");
-                logSource.LogInfo($"\tPosX {__result.transform.position.x}, PosY {__result.transform.position.y}, Parent? '{__result.transform.parent}' ViewMode {__result.Mode.ToString()}");
-                logSource.LogInfo($"\tMinionModelEnum {__result.Minion.Enum.ToString()}");
-                logSource.LogInfo($"\tSprite {__result.SpriteRenderer.sprite?.name}");
-                logSource.LogInfo($"\tId '{__result.MinionId.Unique}' '{__result.MinionId.ReadableID}' '{__result.MinionId.BoardId}' '{__result.Minion.Id.ReadableID}' '{__result.Minion.Id.Unique}' '{__result.Minion.Id.BoardId}'");
-                logSource.LogInfo($"Exit Board.SetMinion");
-
-                StackTrace t = new StackTrace(); 
-                logSource.LogInfo(t.ToString());
+                logger.Information($"Entered Board.SetMinion");
+                logger.Information($"\tPosX {__result.transform.position.x}, PosY {__result.transform.position.y}, Parent? '{__result.transform.parent}' ViewMode {__result.Mode.ToString()}");
+                logger.Information($"\tMinionModelEnum {__result.Minion.Enum.ToString()}");
+                logger.Information($"\tSprite {__result.SpriteRenderer.sprite?.name}");
+                logger.Information($"\tId '{__result.MinionId.Unique}' '{__result.MinionId.ReadableID}' '{__result.MinionId.BoardId}' '{__result.Minion.Id.ReadableID}' '{__result.Minion.Id.Unique}' '{__result.Minion.Id.BoardId}'");
+                logger.Information($"Exit Board.SetMinion");
 
                 // Test 1
                 // make b i g
@@ -123,13 +121,13 @@ namespace SuperAutoPetsMod.Patching
                     if ((__result.gameObject.GetComponent<TestMonoBehaviour>() == null))
                     {
                         __result.gameObject.AddComponent<TestMonoBehaviour>();
-                        logSource.LogInfo("Added TestMonoBehaviour to minion");
+                        logger.Information("Added TestMonoBehaviour to minion");
                     }
                 }
             }
             catch (Exception e)
             {
-                logSource.LogInfo($"Exception during Board.SetMinion {e.ToString()}");
+                logger.Information($"Exception during Board.SetMinion {e.ToString()}");
             }
         }
     }

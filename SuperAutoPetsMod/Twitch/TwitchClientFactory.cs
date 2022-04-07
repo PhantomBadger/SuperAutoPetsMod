@@ -2,11 +2,13 @@
 using Settings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using TwitchLib.Client;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using TwitchLib.Unity;
 
 namespace SuperAutoPetsMod.Twitch
 {
@@ -31,6 +33,11 @@ namespace SuperAutoPetsMod.Twitch
             this.userSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
 
             twitchClient = null;
+        }
+
+        ~TwitchClientFactory()
+        {
+            logger.Information("a");
         }
 
         /// <summary>
@@ -64,22 +71,22 @@ namespace SuperAutoPetsMod.Twitch
                 twitchName = twitchName.Trim();
                 logger.Information($"Setting up Twitch Chat Client for '{twitchName}'");
 
-                var credentials = new ConnectionCredentials(twitchName, oAuthToken);
-                var clientOptions = new ClientOptions();
-                WebSocketClient webSocketClient = new WebSocketClient(clientOptions);
-                twitchClient = new TwitchClient(webSocketClient);
-                twitchClient.Initialize(credentials, twitchName);
+                try
+                {
+                    var credentials = new ConnectionCredentials(twitchName, oAuthToken);
+                    var twitchClient = new Client();
+                    twitchClient.Initialize(credentials, twitchName);
 
-                //twitchClient.OnLog += TwitchClient_OnLog;
+                    twitchClient.Connect();
 
-                twitchClient.Connect();
-                return twitchClient;
+                    return twitchClient;
+                }
+                catch (Exception e)
+                {
+                    logger.Information(e.ToString());
+                    return null;
+                }
             }
         }
-
-        //private void TwitchClient_OnLog(object sender, TwitchLib.Client.Events.OnLogArgs e)
-        //{
-        //    logger.Information($"LOG {e.BotUsername} | {e.Data}");
-        //}
     }
 }

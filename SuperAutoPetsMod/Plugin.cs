@@ -1,15 +1,20 @@
 ﻿using BepInEx;
 using BepInEx.IL2CPP;
 using HarmonyLib;
+using Logging.API;
 using Settings;
 using SuperAutoPetsMod;
 using SuperAutoPetsMod.MonoBehaviours;
 using SuperAutoPetsMod.Patching;
 using SuperAutoPetsMod.Twitch;
+using System;
 using System.Reflection;
-using UnityEngine;
+using System.Text;
+using System.Threading;
+using TwitchLib.Client;
+using TwitchLib.Unity;
 
-namespace MyFirstPlugin
+namespace SuperAutoPetsMod
 {
     [BepInPlugin("org.phantombadger.plugins.superautopetsmod", "Super Auto Pets Mod", "0.0.0.1")]
     [BepInProcess("Super Auto Pets.exe")]
@@ -23,6 +28,7 @@ namespace MyFirstPlugin
             // Set up components
             AddComponent<TestMonoBehaviour>();
             AddComponent<EmoteConsumerMonoBehaviour>();
+            AddComponent<ThreadDispatcher>();
 
             // Initialise Logger and Settings
             var logger = new BepInExLogger(Log);
@@ -34,10 +40,10 @@ namespace MyFirstPlugin
 
             // Make the Twitch Factory
             var twitchClientFactory = new TwitchClientFactory(userSettings, logger);
-            var twitchEmoteProvider = new TwitchEmoteProvider(twitchClientFactory.GetTwitchClient());
+            var twitchEmoteProvider = new TwitchEmoteProvider(twitchClientFactory.GetTwitchClient(), logger);
 
-            // Set up the manual patches
-            var patch = new BoardViewPatch(twitchEmoteProvider, logger);
+            //// Set up the manual patches
+            var patch = new TestPatch(logger, twitchEmoteProvider);
             patch.SetUpManualPatch(harmony);
 
             Log.LogInfo($"Plugin org.phantombadger.plugins.superautopetsmod Load Function is complete!");

@@ -1,2 +1,2 @@
 # SuperAutoPets-Mod
-A mod for Super Auto Pets
+A mod for Super Auto Pets - Currently Very WIP

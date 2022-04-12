@@ -28,6 +28,7 @@ namespace SuperAutoPetsMod
             // Set up components
             AddComponent<TestMonoBehaviour>();
             AddComponent<EmoteConsumerMonoBehaviour>();
+            AddComponent<EmoteDisplayMonoBehaviour>();
             AddComponent<ThreadDispatcher>();
 
             // Initialise Logger and Settings
@@ -42,8 +43,8 @@ namespace SuperAutoPetsMod
             var twitchClientFactory = new TwitchClientFactory(userSettings, logger);
             var twitchEmoteProvider = new TwitchEmoteProvider(twitchClientFactory.GetTwitchClient(), logger);
 
-            //// Set up the manual patches
-            var patch = new TestPatch(logger, twitchEmoteProvider);
+            // Set up the manual patches
+            var patch = new EmoteConsumerCreatorPatch(twitchEmoteProvider, logger);
             patch.SetUpManualPatch(harmony);
 
             Log.LogInfo($"Plugin org.phantombadger.plugins.superautopetsmod Load Function is complete!");

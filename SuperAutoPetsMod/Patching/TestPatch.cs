@@ -23,14 +23,12 @@ namespace SuperAutoPetsMod.Patching
     public class TestPatch : IManualPatch
     {
         private static BepInExLogger logger;
-        private static Twitch.TwitchEmoteProvider emoteProvider;
         //private static ConcurrentDictionary<string, Color> lookup;
         //private static ConcurrentDictionary<string, GameObject> lookup2;
 
-        public TestPatch(BepInExLogger newLogger, Twitch.TwitchEmoteProvider emoteProvider)
+        public TestPatch(BepInExLogger newLogger)
         {
             logger = newLogger ?? throw new ArgumentNullException(nameof(newLogger));
-            TestPatch.emoteProvider = emoteProvider;
             //lookup = new ConcurrentDictionary<string, Color>();
             //lookup2 = new ConcurrentDictionary<string, GameObject>();
         }

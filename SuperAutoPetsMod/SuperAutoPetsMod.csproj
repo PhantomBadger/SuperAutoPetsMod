@@ -49,6 +49,9 @@
       <HintPath>lib\Il2Cppmscorlib.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>lib\Il2CppSystem.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
       <HintPath>..\packages\TwitchLib.Unity\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
@@ -112,6 +115,14 @@
       <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>lib\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -122,8 +133,8 @@
     <ContentWithTargetPath Include="facade-lib\System.Drawing.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  <TargetPath>System.Drawing.dll</TargetPath>
-    </ContentWithTargetPath >
-	<None Include="facade-lib\System.Drawing.dll"/>
+    </ContentWithTargetPath>
+	<None Include="facade-lib\System.Drawing.dll" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
